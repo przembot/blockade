@@ -156,13 +156,16 @@ class Blockade(object):
             links=links,
             cap_add=container.cap_add)
 
+        def packPort(port):
+            return (port, 'udp')
+
         def create_container():
             # try to create container
             response = self.docker_client.create_container(
                 container.image,
                 command=container.command,
                 name=container_name,
-                ports=container.expose_ports,
+                ports=(container.expose_ports+list(map(packPort, container.expose_ports))),
                 volumes=volumes,
                 hostname=container.hostname,
                 environment=container.environment,
